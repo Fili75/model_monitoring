@@ -26,7 +26,11 @@ def data_info() -> Callable[[Info], None]:
 
     def instrumentation(info: Info) -> None:
         data_endpoint = read_data()
-        data_info= data_endpoint.mean(axis=0).to_dict()[0] - pd.read_csv("data/data.csv").mean(axis=0)[0]
+        if data_endpoint.empty:
+            predict_mean = 0
+        else:
+            predict_mean = data_endpoint.mean(axis=0).to_dict()[0]
+        data_info= pd.read_csv("data/data.csv").mean(axis=0)[0] - predict_mean
         METRIC_MEAN_DIFFERENCE.set(data_info)
     return instrumentation
 
